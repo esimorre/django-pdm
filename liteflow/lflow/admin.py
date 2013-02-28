@@ -44,7 +44,12 @@ class ComponentProcessusAdmin(admin.ModelAdmin):
     def get_model_perms(self, request):
         perms = super(ComponentProcessusAdmin, self).get_model_perms(request)
         perm = self.opts.app_label + ".can_%s_processus"
-        perms.update({'work':request.user.has_perms(perm % 'work'), 'start':request.user.has_perms(perm % 'start')})
+        # if Component proxy, select perms on Component
+        if self.model._meta.proxy:
+            if self.model._meta.proxy_for_model == Component:
+                perm = "lflow.can_%s_processus"
+        print perm % 'work', request.user, self.model
+        perms.update({'work':request.user.has_perms((perm % 'work',)), 'start':request.user.has_perms((perm % 'start',))})
         return perms
     
     def save_model(self, request, obj, form, change):
