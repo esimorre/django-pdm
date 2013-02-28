@@ -1,0 +1,33 @@
+{% extends "admin/lflow/component/change_form.html" %}
+{% load i18n admin_modify adminmedia %}
+{% load url from future %}
+
+
+{% block content_title %}{% if change %}
+
+	<h2>Current task: {{ original.task.name }}</h2>
+	{{ original.task_description|safe|linebreaks }}
+{% else %}
+	<h1>{{ title }}</h1>
+	
+{% endif %}{% endblock %}
+
+
+{% block top_form %}
+{% if add %}
+
+	{% if not original.task %}
+		<input type="submit" value="Start the processus {{ original.start_processus }}" name="_start_process"/>
+	{% endif %}
+	
+{% else %}
+	<div class="submit-row">
+		{% for a in original.visible_actions %}
+			<input type="submit" value="{{ a.button_label }}" name="{{ a.button_name }}"/>
+		{% endfor %}
+	</div>
+{% endif %}
+{% endblock %}
+
+
+{% block after_related_objects %}{% endblock %}

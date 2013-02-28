@@ -1,0 +1,14 @@
+{% extends "admin/lflow/component/change_form.html" %}
+{% load i18n admin_modify adminmedia %}
+{% load url from future %}
+
+{% block top_form %}
+
+	{% if not original.task %}
+		<input type="submit" value="Start the processus {{ original.start_processus }}" name="_start_process"/>
+	{% endif %}
+	
+{% endblock %}
+
+
+{% block after_related_objects %}{% endblock %}
