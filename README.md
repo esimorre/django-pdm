@@ -3,6 +3,8 @@ django-pdm
 
 A light framework for Product Data Management.
 
+(for now, it is a quite experimental project)
+
 see
 
 * The page: http://esimorre.github.com/django-pdm
