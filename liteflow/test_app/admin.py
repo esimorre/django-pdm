@@ -38,5 +38,5 @@ class PartInProcessusAdmin(ComponentProcessusAdmin):
 admin.site.register(PartInProcessus, PartInProcessusAdmin)
 
 class WorkItemAdmin(ComponentProcessusAdmin):
-    component_type = "Work item"
+    pass
 admin.site.register(SimpleWorkItem, WorkItemAdmin)

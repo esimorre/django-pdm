@@ -16,10 +16,6 @@
 {% block top_form %}
 {% if add %}
 
-	{% if not original.task %}
-		<input type="submit" value="Start the processus {{ original.start_processus }}" name="_start_process"/>
-	{% endif %}
-	
 {% else %}
 	<div class="submit-row">
 		{% for a in original.visible_actions %}

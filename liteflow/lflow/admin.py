@@ -4,21 +4,24 @@ from models import *
 
 class ProcessusAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
+    save_as = True
 admin.site.register(Processus, ProcessusAdmin)
 
 class ActionAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'task', 'target')
+    list_display = ('name', 'desc_br', 'task', 'target')
     list_filter = ('task', 'target')
     prepopulated_fields = {"label":("name",)}
+    save_as = True
 admin.site.register(Action, ActionAdmin)
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'type', 'processus', 'group')
+    list_display = ('name', 'desc_br', 'type', 'processus', 'group')
     list_filter = ('processus', 'type', 'group')
+    save_as = True
 admin.site.register(Task, TaskAdmin)
 
 class ComponentAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'type')
+    list_display = ('pk', 'type', 'worker', 'task')
     list_filter = ('type', 'worker', 'task')
     save_as = True
 admin.site.register(Component, ComponentAdmin)
@@ -30,13 +33,10 @@ class ComponentProcessusAdmin(admin.ModelAdmin):
     
     change_form_template = "admin/lflow/compproc/change_form.html"
     add_form_template = "admin/lflow/compproc/add_form.html"
-
-    # overrides
-    component_type = None
     
     def queryset(self, request):
         qs = super(ComponentProcessusAdmin, self).queryset(request)
-        if self.component_type: qs = qs.filter(type=self.component_type)
+        qs = qs.filter(type=self.model._meta.object_name)
         if not request.user.is_superuser:
             qs = qs.filter(task__group__in=request.user.groups.all())
         return qs.exclude(task__type='end')
@@ -55,8 +55,7 @@ class ComponentProcessusAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         #print "change", change
         if not change:
-            print "component_type", self.component_type
-            obj.save_start_processus(request.user, self.component_type)
+            obj.save_start_processus(request.user, self.model._meta.object_name)
             self.log_change(request, obj, "init processus %s" % obj.start_processus)
         else:
             obj.action(request, self.log_change)

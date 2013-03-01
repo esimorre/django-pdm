@@ -1,6 +1,7 @@
 ﻿from django.db import models
 from django.contrib.auth.models import User, Group
 from django.conf import settings
+from django.template.defaultfilters import linebreaks
 
 class Base(models.Model):
     name = models.CharField(max_length=50)
@@ -8,6 +9,11 @@ class Base(models.Model):
     
     def get_absolute_url(self):
         return "/admin/lflow/%s/%s/" % (self._meta.object_name.lower(), self.pk)
+    
+    def desc_br(self):
+        return linebreaks(self.description)
+    desc_br.allow_tags = True
+    desc_br.short_description = u"Description"
     
     def __unicode__(self):
         return self.name
@@ -47,6 +53,10 @@ class Task(Base):
         if not names and self.type in (u'start', u'interactive'):
             raise Exception("The interactive task %s has no visible action" % self.name)
         return actions
+    
+    def __unicode__(self):
+        return "%s:%s" % (self.processus, self.name)
+       
 
 class Action(Base):
     label = models.CharField(max_length=50, help_text=u"label of the action button", null=True, blank=True)
@@ -57,12 +67,12 @@ class Action(Base):
     code = models.TextField(null=True, blank=True)
     
     def button_name(self):
-        w1 = self.name.split(" ")[0]
-        if w1.lower() == "enregistrer": return "_save"
+        w1 = self.name
+        if w1.lower() == "save": return "_save"
         return "_" + w1.lower()
     
     def button_label(self):
-        return self.name.split(":")[0]
+        return self.label.split(":")[0]
     
     def is_enabled(self, ob):
         getProp = ob.getProp
@@ -153,6 +163,7 @@ class AbstractComponent(models.Model):
                 if a.exec_code(self, f_log, request):
                     if a.target:
                         self.task = a.target
+                        print "current task set to:", self.task
                         self.save()
                         f_log(request, self, "task %s" % self.task.name)
     
@@ -167,6 +178,15 @@ class AbstractComponent(models.Model):
         self.task = Processus.objects.get(name=processus).get_init_task()
         self.save()
     
+    def wait_clones(self, nb=100):
+        # parallel pathes junction.
+        # return True when the source and nb clones enter the task
+        nbclones = self.clones.count()
+        nbclones_here = self.clones.filter(task=self.task)
+        if nbclones == nb or nbclones_here == nbclones:
+            return True
+        return False
+    
     class Meta:
         abstract = True
         permissions = (
@@ -174,8 +194,25 @@ class AbstractComponent(models.Model):
             ("can_work_processus", "Can work on a processus"),
         )
 
+class AbstractClone(AbstractComponent):
+    # usage: implement this abstract model and add à foreignKey named "source"
+    # and a related_name named "clones".
+    # for parallel pathes
+    def get_source(self):
+        # quite useless: use source instead
+        return self.source
+    
+    def wait_clones(self, nb=100):
+        # parallel pathes junction.
+        # clones are always waiting
+        return False
+    
+    class Meta:
+        abstract = True
+
+
 class Component(AbstractComponent, Base, Props):
-    type = models.CharField(max_length=50, choices=settings.COMPONENT_TYPES, editable=False)
+    type = models.CharField(max_length=50, editable=False)
     
     link_map = {}
     
@@ -186,7 +223,7 @@ class Component(AbstractComponent, Base, Props):
         return d
     
     def save_start_processus(self, user, component_type=None):
-        if component_type: self.type = component_type
+        self.type = component_type
         super(Component, self).save_start_processus(user, component_type)
     
     def list_examples(self):
