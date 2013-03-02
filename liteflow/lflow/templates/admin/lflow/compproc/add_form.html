@@ -2,10 +2,16 @@
 {% load i18n admin_modify adminmedia %}
 {% load url from future %}
 
+{% block content_title %}
+
+	<h2>{{ title }} and start a new process</h2>
+	
+{% endblock %}
+
 {% block top_form %}
 
 	{% if not original.task %}
-		<input type="submit" value="Start the processus {{ original.start_processus }}" name="_start_process"/>
+		<input type="submit" value="Start the process {{ original.start_processus }}" name="_start_process"/>
 	{% endif %}
 	
 {% endblock %}

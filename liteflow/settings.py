@@ -127,9 +127,9 @@ INSTALLED_APPS = (
 )
 
 LITEFLOW_DATA = {
-'default_processus':'Welcome',
+'default_process':'Welcome',
 'default_end':('Welcome', 'Default end task'),
-'processus_errors':('Processus administration', 'Processus error'),
+'process_errors':('Process administration', 'Process error'),
 }
 
 

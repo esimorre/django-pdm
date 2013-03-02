@@ -52,12 +52,12 @@ class ConfContent(Conf):
 
 from ..lflow.models import Component, AbstractComponent
 class PartInProcessus(Entity, AbstractComponent):
-    start_processus = 'Product processus'
+    start_processus = 'Product process'
     info = models.CharField(max_length=50)
 
 
 class SimpleWorkItem(Component):
-    start_processus = 'Product processus'
+    start_processus = 'Product process'
     
     class Meta:
         proxy = True

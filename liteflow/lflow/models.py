@@ -29,7 +29,8 @@ class Processus(Base):
         return self.task_set.get(type=u"start")
     
     class Meta:
-        verbose_name_plural = u"Processus"
+        verbose_name = u"Process"
+        verbose_name_plural = u"Processes"
 
 TASK_TYPES = (
 (u'start', u'start'),
@@ -153,7 +154,7 @@ class AbstractComponent(models.Model):
     def action(self, request, f_log):
         if request.POST.has_key("_start_process"):
             self.save_start_process(request.user)
-            f_log(request, self, "init processus %s" % self.start_processus)
+            f_log(request, self, "init process %s" % self.start_processus)
             return
         
         for a in self.task.actions.all():
