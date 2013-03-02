@@ -6,8 +6,12 @@ from models import *
 class DocumentationInlineAdmin(LinkInlineAdmin):
     model = ProductDocumentation
 
+class CompositionInlineAdmin(LinkInlineAdmin):
+    model = Composition
+    fk_name = 'parent'
+
 class ProductAdmin(EntityWithConfAdmin):
-    inlines = [DocumentationInlineAdmin,]
+    inlines = [DocumentationInlineAdmin, CompositionInlineAdmin]
 admin.site.register(Product, ProductAdmin)
 
 admin.site.register(Document, EntityAdmin)
