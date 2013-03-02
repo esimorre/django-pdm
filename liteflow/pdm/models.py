@@ -13,6 +13,13 @@ class Entity(models.Model):
     
     state = models.CharField(max_length=30, default='created')
     
+    conf_models = []
+    
+    def get_confs(self):
+        confs = []
+        for cm in self.conf_models:
+            cm.objects.filter()
+    
     def get_or_create_conf(self, model):
         pass
     
@@ -49,7 +56,8 @@ class Conf(models.Model):
     
     def __unicode__(self):
         return self.reference
-    
+
+
 class Link(models.Model):
     conf = models.ForeignKey(Conf)
     rev_start = models.IntegerField(null=True, blank=True, editable=False)
@@ -68,10 +76,21 @@ class Link(models.Model):
         return self.child
      
     def save(self, *largs, **kwargs):
+        if not self.pk:
+            # creation
+            for l in self._default_manager.filter(parent=self.parent, child=self.child, is_last=True):
+                l.is_last = False
+                l.save()
+        else:
+            if not self.is_last:
+                raise Exception("a non last link cannot be modified")
         super(Link, self).save(*largs, **kwargs)
         if not self.conf.reference:
             self.conf.reference = self.get_parent().reference
             self.conf.save()
+        else:
+            if self.conf.reference != self.get_parent().reference:
+                raise Exception("all links must have the same parent")
     
     def __unicode__(self):
         return "%s -> %s" % (self.get_parent(), self.get_child())

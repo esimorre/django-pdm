@@ -3,9 +3,24 @@ from django.contrib.auth.models import User
 
 from ..pdm.models import Entity, Link, Conf, ConfManager
 
+
+class ConfComposition(Conf):
+    objects = ConfManager()
+    class Meta:
+        proxy = True
+        verbose_name = "Composition configuration"
+
+class ConfProductDocumentation(Conf):
+    objects = ConfManager()
+    class Meta:
+        proxy = True
+        verbose_name = "Product documentation configuration"
+
 class Product(Entity):
     image = models.FileField(upload_to="documents", null=True, blank=True)
     type = models.CharField(max_length=20)
+    
+    conf_models = [ConfComposition, ConfProductDocumentation]
 
 class Document(Entity):
     file = models.FileField(upload_to="documents", null=True, blank=True)
@@ -19,24 +34,12 @@ class Composition(Link):
     class Meta:
         verbose_name = "Composition link"
 
-class ConfComposition(Conf):
-    objects = ConfManager()
-    class Meta:
-        proxy = True
-        verbose_name = "Composition configuration"
-
 
 class ProductDocumentation(Link):
     parent = models.ForeignKey(Product)
     child = models.ForeignKey(Document)
     class Meta:
         verbose_name = "Product documentation link"
-
-class ConfProductDocumentation(Conf):
-    objects = ConfManager()
-    class Meta:
-        proxy = True
-        verbose_name = "Product documentation configuration"
 
 
 class Content(Composition):

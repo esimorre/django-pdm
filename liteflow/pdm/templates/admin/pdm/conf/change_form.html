@@ -36,16 +36,12 @@
 {% endblock %}
 
 
-<div class="module">
-<h2>Configurations</h2>
-<p>
-entity with conf: {% for c in confs %}{{ c }} {% endfor %}
+
+<h2>{{ model_parent }} reference : [{{ parent }}]</h2>
 
 </div>
 
 <p/>
-
-<h2>Attributes</h2>
 
 <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
 <div>
