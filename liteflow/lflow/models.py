@@ -132,7 +132,8 @@ class Props(models.Model):
 
 class AbstractComponent(models.Model):
     task = models.ForeignKey(Task, null=True, blank=True, editable=False)
-    worker = models.ForeignKey(User, null=True, blank=True, editable=False)
+    worker = models.ForeignKey(User, null=True, blank=True, editable=False,
+        related_name="%(class)s_components")
     
     def __unicode__(self):
         name = "-"

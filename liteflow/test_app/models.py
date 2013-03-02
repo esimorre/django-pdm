@@ -51,7 +51,8 @@ class ConfContent(Conf):
         verbose_name = "Content configuration"
 
 from ..lflow.models import Component, AbstractComponent
-class PartInProcessus(Entity, AbstractComponent):
+
+class Part(Entity, AbstractComponent):
     start_processus = 'Product process'
     info = models.CharField(max_length=50)
 

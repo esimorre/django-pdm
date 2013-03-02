@@ -1,10 +1,11 @@
 #-*- coding: utf8 -*-
 from django.contrib import admin
-from ..pdm.admin import LinkInlineAdmin, ConfAdmin, LinkAdmin
+from ..pdm.admin import *
 from models import *
 
-admin.site.register(Product)
-admin.site.register(Document)
+admin.site.register(Product, EntityWithConfAdmin)
+
+admin.site.register(Document, EntityAdmin)
 
 
 admin.site.register(Composition, LinkAdmin)
@@ -33,9 +34,9 @@ class ConfProductDocumentationAdmin(ConfAdmin):
 admin.site.register(ConfProductDocumentation, ConfProductDocumentationAdmin)
 
 from ..lflow.admin import ComponentProcessusAdmin
-class PartInProcessusAdmin(ComponentProcessusAdmin):
+class PartAdmin(ComponentProcessusAdmin):
     pass
-admin.site.register(PartInProcessus, PartInProcessusAdmin)
+admin.site.register(Part, PartAdmin)
 
 class WorkItemAdmin(ComponentProcessusAdmin):
     pass

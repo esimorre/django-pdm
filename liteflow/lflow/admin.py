@@ -36,7 +36,8 @@ class ComponentProcessusAdmin(admin.ModelAdmin):
     
     def queryset(self, request):
         qs = super(ComponentProcessusAdmin, self).queryset(request)
-        qs = qs.filter(type=self.model._meta.object_name)
+        if hasattr(self, 'type'):
+            qs = qs.filter(type=self.model._meta.object_name)
         if not request.user.is_superuser:
             qs = qs.filter(task__group__in=request.user.groups.all())
         return qs.exclude(task__type='end')
