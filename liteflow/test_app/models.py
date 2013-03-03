@@ -1,15 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from ..pdm.models import Entity, Link
+from ..pdm.models import Entity, Link, VersionedEntity
 
 
-class Product(Entity):
+class Product(VersionedEntity):
     image = models.FileField(upload_to="documents", null=True, blank=True)
     type = models.CharField(max_length=20)
     
 
-class Document(Entity):
+class Document(VersionedEntity):
     file = models.FileField(upload_to="documents", null=True, blank=True)
     author = models.CharField(max_length=50)
 
@@ -21,6 +21,7 @@ class Composition(Link):
     class Meta:
         verbose_name = "Composition link"
 
+Product.register_conf(Composition)
 
 class ProductDocumentation(Link):
     parent = models.ForeignKey(Product)
@@ -28,11 +29,15 @@ class ProductDocumentation(Link):
     class Meta:
         verbose_name = "Product documentation link"
 
+Product.register_conf(ProductDocumentation)
+
 
 class Content(Composition):
     class Meta:
         proxy = True
         verbose_name = "Content link"
+
+Product.register_conf(Content)
 
 from ..lflow.models import Component, AbstractComponent
 

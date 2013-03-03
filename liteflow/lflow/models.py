@@ -230,3 +230,15 @@ class Component(AbstractComponent, Base, Props):
     
     def list_examples(self):
         return Component.objects.filter(type=self.type, description__contains="#Example")
+
+class NotificationManager(models.Manager):
+    # user or group 
+    def notitfy(self, msg, user=None, group=None, task_model=None, obj=None):
+        print "todo notitfy"
+        
+class Notification(Component):
+    start_processus = settings.LFLOW_NOTIFICATION_PROCESSUS
+    
+    objects = NotificationManager()
+    class Meta:
+        proxy = True
