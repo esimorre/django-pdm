@@ -16,7 +16,7 @@ class Entity(models.Model):
     
     # model is a Link-based model
     @classmethod
-    def register_conf(cls, model):
+    def register_conf(cls, model, ):
         if not model in cls.confs: cls.confs.append(model)
     
     def check_out(self):
@@ -44,10 +44,12 @@ class VersionedEntity(Entity):
     
     def _copy_confs(self, obj_src):
         for conf in self.confs:
-            for link in conf.objects.filter(parent=link.parent):
-                link.copy(parent=self)
-            for link in conf.objects.filter(child=link.child):
-                link.copy(child=self)
+            if isinstance(obj_src, conf.parent.field.rel.to):
+                for link in conf.objects.filter(parent=obj_src):
+                    link.copy(parent=self)
+            if isinstance(obj_src, conf.child.field.rel.to):
+                for link in conf.objects.filter(child=obj_src):
+                    link.copy(child=self)
     
     class Meta:
         abstract = True
@@ -74,6 +76,7 @@ class Link(models.Model):
         self.pk = None
         if parent: self.parent = parent
         if child: self.child = child
+        self.save()
     
     def save(self, write_nolast=False, *largs, **kwargs):
         if not self.pk:

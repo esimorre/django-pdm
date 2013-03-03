@@ -11,10 +11,11 @@ class CompositionInlineAdmin(LinkInlineAdmin):
     fk_name = 'parent'
 
 class ProductAdmin(EntityWithConfAdmin):
+    actions = [action_new_version,]
     inlines = [DocumentationInlineAdmin, CompositionInlineAdmin]
 admin.site.register(Product, ProductAdmin)
 
-admin.site.register(Document, EntityAdmin)
+admin.site.register(Document, VersionedEntityAdmin)
 
 
 admin.site.register(Composition, LinkAdmin)

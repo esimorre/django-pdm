@@ -30,6 +30,7 @@ class ProductDocumentation(Link):
         verbose_name = "Product documentation link"
 
 Product.register_conf(ProductDocumentation)
+Document.register_conf(ProductDocumentation)
 
 
 class Content(Composition):

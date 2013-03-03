@@ -2,6 +2,14 @@
 from django.contrib import admin
 from models import *
 
+
+# actions
+def action_new_version(modeladmin, request, queryset):
+    for versioned in queryset.all():
+        versioned.new_version()
+action_new_version.short_description = "Create a new version"
+
+
 class EntityAdmin(admin.ModelAdmin):
     list_display = ('reference', 'orga', 'creator')
     date_hierarchy = 'created'
@@ -12,6 +20,8 @@ class EntityAdmin(admin.ModelAdmin):
             self.model.creator = request.user
         super(EntityAdmin, self).save_model(request, obj, form, change)
 
+class VersionedEntityAdmin(EntityAdmin):
+    actions = [action_new_version,]
 
 class LinkAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'is_last', 'index', 'created', 'modified')
@@ -31,4 +41,3 @@ class EntityWithConfAdmin(EntityAdmin):
         #for cm in self.model.conf_models: context['confs'].append(cm._meta.verbose_name)
         context.update({'test':'test ok'})
         return super(EntityWithConfAdmin, self).render_change_form(request, context, add, change, form_url, obj)
-        
