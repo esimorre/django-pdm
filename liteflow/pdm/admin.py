@@ -15,6 +15,15 @@ class EntityAdmin(admin.ModelAdmin):
     date_hierarchy = 'created'
     save_as = True
     
+    def construct_change_message(self, request, form, formsets):
+        msg = super(EntityAdmin, self).construct_change_message(request, form, formsets)
+        if form.changed_data:
+            try:
+                msg = msg + " initial: (%s)" % ", ".join([form.initial[v] for v in form.changed_data])
+            except Exception, v:
+                print v
+        return msg
+    
     def save_model(self, request, obj, form, change):
         if not change and not self.model.creator:
             self.model.creator = request.user

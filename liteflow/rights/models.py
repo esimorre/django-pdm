@@ -15,8 +15,16 @@ OPERATION_CHOICES = (
 (u'Manage', u'Manage'),
 (u'Oper1', u'Oper1'),
 )
+
+STATE_CHOICES = (
+(u'created', u'created'),
+(u'valid', u'valid'),
+(u'released', u'released'),
+(u'obsolete', u'obsolete'),
+)
 class Right(models.Model):
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
     group = models.ForeignKey(Group, null=True, blank=True)
     organization = models.ForeignKey(Organization, null=True, blank=True)
     operation = models.CharField(max_length=50, choices=OPERATION_CHOICES)
+    state = models.CharField(max_length=30, null=True, blank=True, choices=STATE_CHOICES)

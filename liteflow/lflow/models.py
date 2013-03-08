@@ -28,6 +28,9 @@ class Processus(Base):
             raise Exception("The processus %s has not start task" % self.name)
         return self.task_set.get(type=u"start")
     
+    def graph(self):
+        pass
+    
     class Meta:
         verbose_name = u"Process"
         verbose_name_plural = u"Processes"
@@ -39,7 +42,7 @@ TASK_TYPES = (
 (u'auto', u'auto'),
 )
 class Task(Base):
-    processus = models.ForeignKey(Processus)
+    processus = models.ForeignKey(Processus, editable=False)
     group = models.ForeignKey(Group, null=True, blank=True, related_name='tasks', help_text=u'if not set, only for superusers')
     type = models.CharField(max_length=50, choices=TASK_TYPES)
     
@@ -60,6 +63,7 @@ class Task(Base):
        
 
 class Action(Base):
+    processus = models.ForeignKey(Processus, editable=False)
     label = models.CharField(max_length=50, help_text=u"label of the action button", null=True, blank=True)
     task = models.ForeignKey(Task, related_name='actions')
     target = models.ForeignKey(Task, null=True, blank=True, related_name='input_actions')

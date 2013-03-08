@@ -95,3 +95,17 @@ class Link(models.Model):
     class Meta:
         abstract = True
 
+class Release(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField(null=True, blank=True)
+    rev = models.IntegerField(editable=False)
+    
+    def get_entity(self):
+        # parent must be a concrete Entity
+        return self.entity
+    
+    # def save(self): todo
+    
+    class Meta:
+        abstract = True
+ 

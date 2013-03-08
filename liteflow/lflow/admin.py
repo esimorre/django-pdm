@@ -2,23 +2,35 @@
 from django.contrib import admin
 from models import *
 
+class TaskInlineAdmin(admin.TabularInline):
+    model = Task
+    extra = 0
+
+class ActionInlineAdmin(admin.StackedInline):
+    model = Action
+    extra = 0
+
 class ProcessusAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
     save_as = True
+    inlines = [TaskInlineAdmin, ActionInlineAdmin]
 admin.site.register(Processus, ProcessusAdmin)
 
+
+# disabled
 class ActionAdmin(admin.ModelAdmin):
     list_display = ('name', 'desc_br', 'task', 'target')
     list_filter = ('task', 'target')
     prepopulated_fields = {"label":("name",)}
     save_as = True
-admin.site.register(Action, ActionAdmin)
+#admin.site.register(Action, ActionAdmin)
 
+# disabled
 class TaskAdmin(admin.ModelAdmin):
     list_display = ('name', 'desc_br', 'type', 'processus', 'group')
     list_filter = ('processus', 'type', 'group')
     save_as = True
-admin.site.register(Task, TaskAdmin)
+#admin.site.register(Task, TaskAdmin)
 
 class ComponentAdmin(admin.ModelAdmin):
     list_display = ('pk', 'type', 'worker', 'task')

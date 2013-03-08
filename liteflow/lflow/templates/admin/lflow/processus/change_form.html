@@ -59,23 +59,6 @@
 
 
 
-{% if change %}
-  <div class="module">
-  <h2>Tasks</h2>
-  <table>
-  <tr><th>Name</th> <th>Type</th> <th>Description</th></tr>
-  {% for t in original.task_set.all %}
-  <tr>
-    <th><a href="{{ t.get_absolute_url }}">{{ t.name }}</a></th>
-	<td>{{ t.type }} {% ifequal t.type "start" %}*{% endifequal %}</td>
-	<td><pre>{{ t.description }}</pre></td>
-  </tr>
-  {% endfor %}
-  </table>
-  </div>
-{% endif %}
-
-
 
 {% submit_row %}
 
