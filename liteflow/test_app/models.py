@@ -58,3 +58,7 @@ class Car(models.Model):
     organization = models.ForeignKey(Organization)
     state = models.CharField(max_length=30, null=True, blank=True, choices=STATE_CHOICES[1:])
     name = models.CharField(max_length=20)
+    class Meta:
+        permissions = (
+            ("visible_admin", "Visible in admin"),
+        )

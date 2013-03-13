@@ -38,7 +38,7 @@ class RightManager(models.Manager):
         if not self.cache.has_key(user.username):
             self.cache[user.username] = {}
         if not self.cache[user.username].has_key('orgas'):
-            self.cache[user.username]['orgas'] = [r.organization.name for r in self.get_rights(user)]
+            self.cache[user.username]['orgas'] = [r.organization_name() for r in self.get_rights(user)]
         return self.cache[user.username]['orgas']
     
     def visible_states(self, user, model):
@@ -61,10 +61,12 @@ class RightManager(models.Manager):
             self.cache[user.username] = {}
         print "cache:", self.cache
     
-    def get_rights(self, user, model=None):
+    def get_rights(self, user, model=None, operation=None):
         qs = self.filter(group__in=user.groups.all())
         if model:
-            return qs.filter(content_type=ContentType.objects.get_for_model(model))
+            qs = qs.filter(content_type=ContentType.objects.get_for_model(model))
+        if operation:
+            qs = qs.filter(operation=operation)
         return qs
 
 class Right(models.Model):
@@ -73,6 +75,11 @@ class Right(models.Model):
     organization = models.ForeignKey(Organization, null=True, blank=True)
     operation = models.CharField(max_length=50, choices=OPERATION_CHOICES)
     state = models.CharField(max_length=30, null=True, blank=True, choices=STATE_CHOICES)
+    
+    def organization_name(self):
+        if not self.organization:
+            return u'Any'
+        return self.organization.name
     
     objects = RightManager()
 
