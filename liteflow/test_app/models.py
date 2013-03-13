@@ -52,3 +52,9 @@ class SimpleWorkItem(Component):
     
     class Meta:
         proxy = True
+
+from ..rights.models import Organization, STATE_CHOICES
+class Car(models.Model):
+    organization = models.ForeignKey(Organization)
+    state = models.CharField(max_length=30, null=True, blank=True, choices=STATE_CHOICES[1:])
+    name = models.CharField(max_length=20)

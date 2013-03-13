@@ -30,16 +30,21 @@ class RightManager(models.Manager):
     # cache[username] = {'orgas': list_orga_names, }
     cache = {}
     def visible_organizations(self, user):
+        if user.is_superuser:
+            return Organization.objects.all()
         return self.get_rights(user).values_list('organization')
     
     def visible_organizations_names(self, user):
         if not self.cache.has_key(user.username):
             self.cache[user.username] = {}
         if not self.cache[user.username].has_key('orgas'):
-            self.cache[user.username]['orgas'] = [o.name for o in self.visible_organizations(user)]
+            self.cache[user.username]['orgas'] = [r.organization.name for r in self.get_rights(user)]
         return self.cache[user.username]['orgas']
     
-    def visible_states_names(self, user, model):
+    def visible_states(self, user, model):
+        if user.is_superuser:
+            return [u'Any']
+        
         model_name = model._meta.object_name
         if not self.cache.has_key(user.username):
             self.cache[user.username] = {}
@@ -50,14 +55,17 @@ class RightManager(models.Manager):
         return self.cache[user.username]['states'][model_name]
     
     def reset_cache(self, user=None):
+        print "cache:", self.cache
         if not user: self.cache = {}
         else:
             self.cache[user.username] = {}
+        print "cache:", self.cache
     
     def get_rights(self, user, model=None):
-        qs = self.filter(group__in=user.groups)
+        qs = self.filter(group__in=user.groups.all())
         if model:
             return qs.filter(content_type=ContentType.objects.get_for_model(model))
+        return qs
 
 class Right(models.Model):
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
@@ -67,4 +75,10 @@ class Right(models.Model):
     state = models.CharField(max_length=30, null=True, blank=True, choices=STATE_CHOICES)
     
     objects = RightManager()
+
+class RightModel(models.Model):
+    organization = models.ForeignKey(Organization)
+    state = models.CharField(max_length=30, null=True, blank=True, choices=STATE_CHOICES)
     
+    class Meta:
+        abstract = True
