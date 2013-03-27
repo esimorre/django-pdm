@@ -22,13 +22,7 @@
             {% if model.perms.change %}
                 <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
             {% else %}
-            
-                {% if model.perms.read %}
-                    <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
-                {% else %}
                     <th scope="row">{{ model.name }}</th>
-                {% endif %}
-                
             {% endif %}
 
             {% if model.perms.add %}
@@ -44,14 +38,7 @@
                 <td><a href="{{ model.admin_url }}" class="changelink">{% trans 'Change' %}</a></td>
                 {% endblock %}
             {% else %}
-            
-                {% if model.perms.read %}
-                    <td><a href="{{ model.admin_url }}" class="changelink">{% trans 'Browse' %}</a></td>
-                {% else %}
                     <td>&nbsp;</td>
-                {% endif %}
-                
-                
             {% endif %}
             </tr>
         {% endfor %}

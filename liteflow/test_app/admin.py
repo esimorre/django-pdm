@@ -3,8 +3,6 @@ from django.contrib import admin
 from ..pdm.admin import *
 from models import *
 
-from ..rights.admin import RightModelAdmin
-
 class DocumentationInlineAdmin(LinkInlineAdmin):
     model = ProductDocumentation
 
@@ -34,6 +32,6 @@ class WorkItemAdmin(ComponentProcessusAdmin):
     pass
 admin.site.register(SimpleWorkItem, WorkItemAdmin)
 
-class CarAdmin(RightModelAdmin):
-    list_display = ('name', 'state', 'organization')
+class CarAdmin(admin.ModelAdmin):
+    list_display = ('name', 'state')
 admin.site.register(Car, CarAdmin)

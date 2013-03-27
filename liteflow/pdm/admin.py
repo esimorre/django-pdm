@@ -11,7 +11,7 @@ action_new_version.short_description = "Create a new version"
 
 
 class EntityAdmin(admin.ModelAdmin):
-    list_display = ('reference', 'orga', 'creator')
+    list_display = ('reference', 'creator')
     date_hierarchy = 'created'
     save_as = True
     

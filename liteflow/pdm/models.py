@@ -2,13 +2,10 @@
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 
-from ..rights.models import Organization
-
 class Entity(models.Model):
     reference = models.CharField(max_length=30, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    orga = models.ForeignKey(Organization, null=True, blank=True)
     creator = models.ForeignKey(User, null=True, blank=True, editable=False, related_name="%(class)s_entities")
     
     state = models.CharField(max_length=30, default='created')
