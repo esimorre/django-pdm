@@ -16,6 +16,5 @@ It (will) deals about
 
 * workflows
 * configuration management
-* access rights
 
-Three core apps: lflow, pdm, rights ... plus test_app. GUI is simply based on django admin.
+Two core apps: lflow, pdm ... plus test_app. GUI is simply based on django admin.
